@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
-	"goDemo/pipeline"
+	"golearning/pipeline"
 )
 
 func main() {
-	p := pipeline.InMemSort(pipeline.ArraySource(3, 2, 6, 7, 4))
+	p := pipeline.Merge(
+		pipeline.InMemSort(pipeline.ArraySource(3, 2, 6, 7, 4)),
+		pipeline.InMemSort(pipeline.ArraySource(7, 4, 0, 3, 2, 13, 8)),
+	)
 	for num := range p {
 		fmt.Println(num)
 	}
