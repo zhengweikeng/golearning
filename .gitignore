@@ -1,2 +1,4 @@
-pipelinedemo/small.in
-pipelinedemo/large.in
+small.in
+small.out
+large.in
+large.out

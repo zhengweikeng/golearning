@@ -18,6 +18,8 @@ func mergeDemo() {
 }
 
 func main() {
+	// const filename = "small.in"
+	// const n = 100
 	const filename = "large.in"
 	const n = 100000000
 
@@ -39,7 +41,7 @@ func main() {
 	defer file.Close()
 
 	reader := bufio.NewReader(file)
-	p = pipeline.ReaderSource(reader)
+	p = pipeline.ReaderSource(reader, -1)
 
 	count := 1
 	for v := range p {
