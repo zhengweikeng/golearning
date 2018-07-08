@@ -1,13 +1,9 @@
 package engine
 
-import (
-	"golearning/crawler/model"
-	"log"
-)
-
 type ConcurrentEngine struct {
 	Schedule    Schedule
 	WorkerCount int
+	ItemChan    chan interface{}
 }
 
 type Schedule interface {
@@ -35,15 +31,10 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		e.Schedule.Submit(r)
 	}
 
-	profileCount := 0
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			if _, ok := item.(model.Profile); ok {
-				log.Printf("Got profile #%d: %v", profileCount, item)
-				profileCount++
-			}
-
+			go func() { e.ItemChan <- item }()
 		}
 
 		for _, request := range result.Requests {
