@@ -1,7 +1,6 @@
 package engine
 
 import (
-	"golearning/crawler/fetcher"
 	"log"
 )
 
@@ -28,16 +27,4 @@ func (s SimpleEngine) Run(seeds ...Request) {
 			log.Printf("Got item %v", item)
 		}
 	}
-}
-
-func worker(r Request) (ParseResult, error) {
-	//log.Printf("Fetching %s", r.Url)
-
-	body, err := fetcher.Fetch(r.Url)
-	if err != nil {
-		log.Printf("Fetcher: error fetching %s: %v", r.Url, err)
-		return ParseResult{}, err
-	}
-
-	return r.ParserFunc(body), nil
 }
