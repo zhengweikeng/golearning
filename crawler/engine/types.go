@@ -5,6 +5,11 @@ type Request struct {
 	ParserFunc ParserFunc
 }
 
+type SerialzedParser struct {
+	Name string
+	Args interface{}
+}
+
 type ParserFunc func(
 	contents []byte, url string) ParseResult
 

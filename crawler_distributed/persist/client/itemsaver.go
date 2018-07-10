@@ -1,18 +1,20 @@
-package persist
+package client
 
 import (
 	"context"
 	"github.com/pkg/errors"
 	"golearning/crawler/engine"
+	"golearning/crawler_distributed/rpcsupport"
 	"gopkg.in/olivere/elastic.v5"
 	"log"
 )
 
-func ItemSaver(index string) (chan engine.Item, error) {
-	client, err := elastic.NewClient(elastic.SetSniff(false))
+func ItemSaver(host string) (chan engine.Item, error) {
+	client, err := rpcsupport.NewClient(host)
 	if err != nil {
 		return nil, err
 	}
+
 	out := make(chan engine.Item)
 	go func() {
 		itemCount := 0
@@ -21,7 +23,8 @@ func ItemSaver(index string) (chan engine.Item, error) {
 			log.Printf("Item saver: got item #%d: %v", itemCount, item)
 			itemCount++
 
-			err := Save(client, index, item)
+			result := ""
+			err = client.Call("ItemSaverService.Save", item, &result)
 			if err != nil {
 				log.Printf("Item saver: error saving item %v: %v", item, err)
 			}
