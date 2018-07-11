@@ -5,23 +5,27 @@ import (
 	"golearning/crawler/schedule"
 	"golearning/crawler/zhenai/parser"
 
-	"golearning/crawler_distributed/persist/client"
+	itemSaver "golearning/crawler_distributed/persist/client"
+	worker "golearning/crawler_distributed/worker/client"
 )
 
 func main() {
-	itemChan, err := client.ItemSaver(":1234")
+	itemChan, err := itemSaver.ItemSaver(":1234")
 	if err != nil {
 		panic(err)
 	}
 
+	processor, err := worker.CreateProcessor()
+
 	e := engine.ConcurrentEngine{
-		Schedule:    &schedule.QueuedScheduler{},
-		WorkerCount: 100,
-		ItemChan:    itemChan,
+		Schedule:         &schedule.QueuedScheduler{},
+		WorkerCount:      100,
+		ItemChan:         itemChan,
+		RequestProcessor: processor,
 	}
 	e.Run(engine.Request{
-		Url:        "http://www.zhenai.com/zhenghun",
-		ParserFunc: parser.ParseCityList,
+		Url:    "http://www.zhenai.com/zhenghun",
+		Parser: engine.NewFuncParser(parser.ParseCityList, "ParseCityList"),
 	})
 	//e.Run(engine.Request{
 	//	Url:        "http://www.zhenai.com/zhenghun/shanghai",
