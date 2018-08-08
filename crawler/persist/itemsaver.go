@@ -27,7 +27,6 @@ func ItemSaver(index string) (chan engine.Item, error) {
 			}
 		}
 	}()
-
 	return out, nil
 }
 func Save(client *elastic.Client, index string, item engine.Item) error {
